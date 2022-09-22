@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.paymentchain</groupId>
+    <artifactId>paymentchainparent</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>paymentchainparent</name>
+    <description>POM parent project for all spring boot projects</description>
+
+
+    <properties>
+        <!-- Especifica la version con la que se compilara -->
+        <maven.compiler.source>14</maven.compiler.source>
+        <!-- Epecifica la version en la que se ejecutara -->
+        <maven.compiler.target>14</maven.compiler.target>
+
+        <spring-boot.version>2.7.3</spring-boot.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <spring-boot-starter-web.version>2.7.3</spring-boot-starter-web.version>
+        <spring-boot-maven-plugin.version>2.7.3</spring-boot-maven-plugin.version>
+        <postgres.version>42.2.16</postgres.version>
+        <java-validation.version>2.0.1.Final</java-validation.version>
+        <dockerfile-maven-version>1.4.13</dockerfile-maven-version>
+        <spring-cloud-dependencies.version>2021.0.4</spring-cloud-dependencies.version>
+        <springdoc-openapi-ui.version>1.6.9</springdoc-openapi-ui.version>
+        <org.lombo.version>1.18.16</org.lombo.version>
+        <org.mapstruct.version>1.3.1.Final</org.mapstruct.version>
+        <org.mockito.version>3.5.11</org.mockito.version>
+        <com.github.javafaker.version>1.0.2</com.github.javafaker.version>
+    </properties>
+
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+
+    <dependencies>
+        <!--Gives us the ability to quickly setup and run services
+        Property Defaults,Automatic Restart,Live Reload,Global Settings,Remote Applications for debug example via http-->
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+            <!--If want exclude junit4 and use only junit5-->
+            <exclusions>
+                <exclusion>
+                    <groupId>org.junit.vintage</groupId>
+                    <artifactId>junit-vintage-engine</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
+
+
+
+    <build>
+        <plugins>
+            <!--This plugin generate reports in two differents forma .txt and xml
+            in test phase when build life cicle is execuite-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M5</version>
+                <configuration>
+                    <useSystemClassLoader>false</useSystemClassLoader>
+                </configuration>
+            </plugin>
+            <!--It is the spring-boot repackage goal that repackages the JAR produced
+            by maven to specify the main class and make it executable using an embedded container-->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring-boot-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!--<plugin>
+                  <groupId>com.spotify</groupId>
+                  <artifactId>dockerfile-maven-plugin</artifactId>
+                  <version>${dockerfile-maven-version}</version>
+                  <executions>
+                      <execution>
+                          <id>build-docker-image</id>
+                          <phase>package</phase>
+                          <goals>
+                              <goal>build</goal>
+                              <goal>push</goal>
+                          </goals>
+                      </execution>
+                  </executions>
+                  <configuration>
+                      <repository>paymentchain/microservice-docker-${project.artifactId}</repository>
+                      <tag>${project.version}</tag>
+                      <buildArgs>
+                          <JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
+                      </buildArgs>
+                  </configuration>
+              </plugin>-->
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.9.1</version>
+                <configuration>
+                    <locales>en,fr,es</locales>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                </configuration>
+            </plugin>
+            <!--generate project code documentation-->
+            <!--  <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <additionalparam>${javadoc.opts}</additionalparam>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>-->
+            <!--generate maven site documentation-->
+            <!--  <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.9.1</version>
+                <configuration>
+                    <locales>es,es</locales>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <additionalparam>${javadoc.opts}</additionalparam>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>-->
+        </plugins>
+    </build>
+    <modules>
+        <module>businessdomain</module>
+        <module>infraestructuradomain</module>
+    </modules>
+</project>
