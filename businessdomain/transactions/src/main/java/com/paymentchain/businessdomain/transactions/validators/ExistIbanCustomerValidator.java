@@ -24,15 +24,15 @@ public class ExistIbanCustomerValidator implements ConstraintValidator<ExistIban
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
 
         log.info("iban enviado:\t{}", s);
-  /*      try {*/
+        try {
             ResponseEntity<CustomerOutDTO> customerResponse = this.customerFeignClient.getCustomerByIban(s);
             if (customerResponse.getStatusCode() == HttpStatus.OK) {
                 return true;
             }
-     /*   } catch (FeignException e) {
-            log.error("Mensaje error:\t{}", e.getMessage());
+        } catch (FeignException e) {
+            log.error("Mensaje error no controlado por el Feign Exeption:\t{}", e.getMessage());
             return false;
-        }*/
+        }
 
 
         return false;

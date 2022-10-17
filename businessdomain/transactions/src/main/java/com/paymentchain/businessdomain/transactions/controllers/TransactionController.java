@@ -3,6 +3,7 @@ package com.paymentchain.businessdomain.transactions.controllers;
 import com.paymentchain.businessdomain.transactions.entities.Transaction;
 import com.paymentchain.businessdomain.transactions.entities.dto.TransactionInDTO;
 import com.paymentchain.businessdomain.transactions.entities.dto.TransactionOutDTO;
+import com.paymentchain.businessdomain.transactions.enums.Status;
 import com.paymentchain.businessdomain.transactions.exceptions.ValidateFieldsException;
 import com.paymentchain.businessdomain.transactions.repositories.TransactionRepository;
 import com.paymentchain.businessdomain.transactions.validators.ValueNotEqual0ValidatorManual;
@@ -15,6 +16,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -56,6 +58,24 @@ public class TransactionController {
     public ResponseEntity<TransactionOutDTO> post(@Valid @RequestBody TransactionInDTO input) {
 
         Transaction transactionInput = this.modelMapper.map(input, Transaction.class); // ModelMapper
+
+        log.info("Transaction input antes: {}", transactionInput);
+
+        LocalDateTime now = LocalDateTime.now();
+        // Segun la fecha de la transaccion sera el estado
+        if (transactionInput.getDate().isAfter(now)) {
+            transactionInput.setStatus(Status.PENDIENTE);
+        } else if (transactionInput.getDate().isBefore(now)) {
+            transactionInput.setStatus(Status.ACEPTADA);
+        }
+
+        // Segun la comision disminuira el monto
+        if (transactionInput.getFee() > 0) {
+            transactionInput.setAmount(transactionInput.getAmount() - transactionInput.getFee());
+        }
+
+
+        log.info("Transaction input despues: {}", transactionInput);
 
         Transaction transaction = transactionRepository.save(transactionInput);
 
