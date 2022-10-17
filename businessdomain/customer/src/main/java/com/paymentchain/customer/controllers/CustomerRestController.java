@@ -19,6 +19,7 @@ import reactor.netty.tcp.TcpClient;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 @RestController
@@ -32,7 +33,6 @@ public class CustomerRestController {
     private String apiUrlProducts;
 
     private static final Logger log = LoggerFactory.getLogger(CustomerRestController.class);
-
 
 
     @Autowired
@@ -83,6 +83,15 @@ public class CustomerRestController {
         return new ResponseEntity<>(customer, HttpStatus.OK);
     }
 
+    @GetMapping("/iban/{iban}")
+    public ResponseEntity<Customer> getCustomerByIban(@PathVariable String iban) {
+        Optional<Customer> customerOpt = this.customerRepository.findByIban(iban);
+        if (customerOpt.isPresent()) {
+            return ResponseEntity.ok(customerOpt.get());
+        }
+        return ResponseEntity.notFound().build();
+    }
+
     private <T> List<T> getTransactions(String accountIban) {
         // Creating the headers
         WebClient client = this.webClientBuilder.clientConnector(new ReactorClientHttpConnector(HttpClient.from(this.tcpClient)))
@@ -95,7 +104,7 @@ public class CustomerRestController {
         List<Object> block = client.method(HttpMethod.GET)
                 .uri(uriBuilder -> {
                     return uriBuilder
-                            .path("transactions")
+                            .path("api/transactions")
                             .queryParam("ibanAccount", accountIban)
                             .build();
                 })

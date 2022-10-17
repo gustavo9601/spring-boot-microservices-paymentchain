@@ -38,12 +38,16 @@ public class TransactionController {
         return ResponseEntity.ok(this.transactionRepository.findAll());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Transaction> get(@PathVariable long id) {
-        return this.transactionRepository
-                .findById(id)
-                .map(transaction -> ResponseEntity.ok(transaction))
-                .orElse(ResponseEntity.notFound().build());
+    @GetMapping("/{ibanAccount}")
+    public ResponseEntity<List<TransactionOutDTO>> get(@PathVariable String ibanAccount) {
+        List<Transaction> transactions = this.transactionRepository
+                .findByIbanAccount(ibanAccount);
+
+        if (transactions.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(this.modelMapper.map(transactions, List.class));
     }
 
     @PostMapping
