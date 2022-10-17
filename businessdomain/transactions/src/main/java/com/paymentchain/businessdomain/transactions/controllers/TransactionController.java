@@ -5,7 +5,7 @@ import com.paymentchain.businessdomain.transactions.entities.dto.TransactionInDT
 import com.paymentchain.businessdomain.transactions.entities.dto.TransactionOutDTO;
 import com.paymentchain.businessdomain.transactions.exceptions.ValidateFieldsException;
 import com.paymentchain.businessdomain.transactions.repositories.TransactionRepository;
-import com.paymentchain.businessdomain.transactions.validators.ValueNotEqual0Validator;
+import com.paymentchain.businessdomain.transactions.validators.ValueNotEqual0ValidatorManual;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +32,7 @@ public class TransactionController {
 
 
     @Autowired
-    private ValueNotEqual0Validator valueNotEqual0Validator; // Validador manual
+    private ValueNotEqual0ValidatorManual valueNotEqual0Validator; // Validador manual
 
     @GetMapping()
     public ResponseEntity<List<Transaction>> findAll() {
@@ -53,10 +53,7 @@ public class TransactionController {
     }
 
     @PostMapping
-    public ResponseEntity<TransactionOutDTO> post(@Valid @RequestBody TransactionInDTO input,
-                                                  BindingResult bindingResult) {
-
-        this.valueNotEqual0Validator.validate(input, bindingResult); // Validador manual
+    public ResponseEntity<TransactionOutDTO> post(@Valid @RequestBody TransactionInDTO input) {
 
         Transaction transactionInput = this.modelMapper.map(input, Transaction.class); // ModelMapper
 
@@ -67,7 +64,7 @@ public class TransactionController {
         return ResponseEntity.ok(transactionOutDTO);
     }
 
-    @PostMapping("/full-validations")
+    @PostMapping("/full-validationst-test")
     public ResponseEntity<TransactionOutDTO> postFullValidations(@Valid @RequestBody TransactionInDTO input,
                                                                  BindingResult bindingResult) {
 

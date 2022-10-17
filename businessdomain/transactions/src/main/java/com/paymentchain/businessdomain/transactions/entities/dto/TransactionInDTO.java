@@ -3,13 +3,11 @@ package com.paymentchain.businessdomain.transactions.entities.dto;
 import com.paymentchain.businessdomain.transactions.enums.Channel;
 import com.paymentchain.businessdomain.transactions.enums.Status;
 import com.paymentchain.businessdomain.transactions.validators.ContainText;
-import io.micrometer.core.lang.Nullable;
+import com.paymentchain.businessdomain.transactions.validators.ValueNotEqual0;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -35,6 +33,7 @@ public class TransactionInDTO implements Serializable {
     private LocalDateTime date;
 
     @NotNull
+    @ValueNotEqual0
     private Double amount;
 
     @Min(0)
@@ -42,7 +41,7 @@ public class TransactionInDTO implements Serializable {
     private Double fee;
 
     // Validacion personalizada pasando parametro
-    @ContainText(messageToShouldContain = "Hello World =)", message = "El texto no contiene el texto esperado")
+    // @ContainText(messageToShouldContain = "Hello World =)", message = "El texto no contiene el texto esperado")
     private String description;
 
     @NotNull

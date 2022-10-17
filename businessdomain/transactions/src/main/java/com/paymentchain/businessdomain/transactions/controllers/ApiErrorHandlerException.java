@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
@@ -21,6 +22,37 @@ public class ApiErrorHandlerException extends Exception {
 
 
     private static final Logger log = LoggerFactory.getLogger(ApiErrorHandlerException.class);
+
+
+    @ExceptionHandler({MethodArgumentNotValidException.class})
+    public final ResponseEntity<ApiError> methodArgumentNotValidException(
+            MethodArgumentNotValidException exception
+    ) {
+
+        log.info("Error en methodArgumentNotValidException - Mensaje: {}", exception.getMessage());
+        log.info("Error en methodArgumentNotValidException - Clase: {}", exception.getClass());
+
+        Map<String, List<String>> errors = new HashMap<>();
+
+        exception.getFieldErrors()
+                .forEach(error -> {
+                    if (errors.containsKey(error.getField())) {
+                        errors.get(error.getField()).add(error.getDefaultMessage());
+                    } else {
+                        errors.put(error.getField(), List.of(error.getDefaultMessage()));
+                    }
+                });
+
+        ApiError apiError = ApiError.builder()
+                .message(exception.getMessage())
+                .description("Alguno de los valores es incorrecto")
+                .code(HttpStatus.BAD_REQUEST.value())
+                .status(HttpStatus.BAD_REQUEST.getReasonPhrase())
+                .errors(errors)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
+    }
 
 
     // La anotacion recibe diferentes tipos de exepcion a generar
@@ -58,6 +90,7 @@ public class ApiErrorHandlerException extends Exception {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiError);
     }
 
+
     @ExceptionHandler({ValidateFieldsException.class})
     public final ResponseEntity<ApiError> handleValidationException(Exception exception,
                                                                     WebRequest webRequest,
@@ -73,7 +106,7 @@ public class ApiErrorHandlerException extends Exception {
         validateFieldsException.getErrors()
                 .forEach(error -> {
 
-                    if(errors.containsKey(error.getField())) {
+                    if (errors.containsKey(error.getField())) {
                         errors.get(error.getField()).add(error.getDefaultMessage());
                     } else {
                         errors.put(error.getField(), List.of(error.getDefaultMessage()));
@@ -92,7 +125,6 @@ public class ApiErrorHandlerException extends Exception {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
     }
-
 
 
 }
