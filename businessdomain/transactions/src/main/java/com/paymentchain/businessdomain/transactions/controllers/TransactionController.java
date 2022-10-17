@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/transactions")
@@ -43,11 +44,12 @@ public class TransactionController {
         List<Transaction> transactions = this.transactionRepository
                 .findByIbanAccount(ibanAccount);
 
-        if (transactions.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
+        List<TransactionOutDTO> transactionsOutDTO = transactions
+                .stream()
+                .map(transaction -> modelMapper.map(transaction, TransactionOutDTO.class))
+                .collect(Collectors.toList());
 
-        return ResponseEntity.ok(this.modelMapper.map(transactions, List.class));
+        return ResponseEntity.ok(transactionsOutDTO);
     }
 
     @PostMapping

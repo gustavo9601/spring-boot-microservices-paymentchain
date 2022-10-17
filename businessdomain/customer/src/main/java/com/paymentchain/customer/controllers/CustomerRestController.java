@@ -104,8 +104,8 @@ public class CustomerRestController {
         List<Object> block = client.method(HttpMethod.GET)
                 .uri(uriBuilder -> {
                     return uriBuilder
-                            .path("api/transactions")
-                            .queryParam("ibanAccount", accountIban)
+                            .path("transactions")
+                            .pathSegment(accountIban)
                             .build();
                 })
                 .retrieve()
