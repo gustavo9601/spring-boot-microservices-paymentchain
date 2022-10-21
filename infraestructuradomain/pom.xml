@@ -26,5 +26,9 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <modules>
+        <module>eureka</module>
+    </modules>
    
 </project>
