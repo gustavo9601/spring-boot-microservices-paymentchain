@@ -1,0 +1,31 @@
+
+# Configuracion Base MS
+server:
+  port: 8762
+spring:
+  application:
+    name: admin-server
+
+
+# Configuracion Eureka
+eureka:
+  client:
+    registry-fetch-interval-seconds: 5
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    leaseRenewalIntervalInSeconds: 10
+    leaseExpirationDurationInSeconds: 30
+    health-check-url-path: /actuator/health
+    metadata-map:
+      startup: ${random.init}
+
+# Configuracion del administrador
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: ALWAYS

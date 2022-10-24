@@ -27,6 +27,15 @@ replay_pid*
 
 ### Maven ###
 target/
+businessdomain/target/
+businessdomain/customer/target/
+businessdomain/products/target/
+businessdomain/transactions/target/
+infraestructuradomain/target/
+infraestructuradomain/adminserver/target/
+infraestructuradomain/eureka/target/
+
+
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
