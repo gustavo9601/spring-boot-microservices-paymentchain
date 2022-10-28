@@ -109,6 +109,8 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.0.0-M5</version>
                 <configuration>
+                    <!-- DInhabilitamos que corra las pruebas al compilar -->
+                    <testFailureIgnore>true</testFailureIgnore>
                     <useSystemClassLoader>false</useSystemClassLoader>
                 </configuration>
             </plugin>
@@ -126,7 +128,9 @@
                     </execution>
                 </executions>
             </plugin>
-            <!--<plugin>
+
+            <!-- Plugin para generar una la imagen de Docker una ves se compila -->
+            <plugin>
                   <groupId>com.spotify</groupId>
                   <artifactId>dockerfile-maven-plugin</artifactId>
                   <version>${dockerfile-maven-version}</version>
@@ -141,13 +145,14 @@
                       </execution>
                   </executions>
                   <configuration>
+                      <!-- Armando el nombre de la imagen -->
                       <repository>paymentchain/microservice-docker-${project.artifactId}</repository>
                       <tag>${project.version}</tag>
                       <buildArgs>
                           <JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
                       </buildArgs>
                   </configuration>
-              </plugin>-->
+              </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
