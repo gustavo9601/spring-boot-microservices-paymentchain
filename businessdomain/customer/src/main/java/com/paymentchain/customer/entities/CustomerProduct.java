@@ -1,13 +1,16 @@
 package com.paymentchain.customer.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "customer_products")
 public class CustomerProduct implements Serializable {
 

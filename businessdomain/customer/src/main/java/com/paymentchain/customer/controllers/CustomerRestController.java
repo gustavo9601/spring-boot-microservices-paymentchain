@@ -1,11 +1,20 @@
 package com.paymentchain.customer.controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.paymentchain.customer.dtos.CustomerInDto;
+import com.paymentchain.customer.dtos.CustomerOutDto;
 import com.paymentchain.customer.entities.Customer;
+import com.paymentchain.customer.mappers.CustomerInMapper;
+import com.paymentchain.customer.mappers.CustomerOutMapper;
 import com.paymentchain.customer.repositories.CustomerRepository;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +31,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
+@Tag(name = "customers")
+@SecurityRequirement(name = "basicAuth") // Usara spring doc para generar la documentación y mostrar el input del auth
 @RestController
 @RequestMapping("/api/customers")
 public class CustomerRestController {
@@ -34,6 +45,14 @@ public class CustomerRestController {
 
     private static final Logger log = LoggerFactory.getLogger(CustomerRestController.class);
 
+
+    /*
+     * Mappers
+     * */
+    @Autowired
+    private CustomerInMapper customerInMapper;
+    @Autowired
+    private CustomerOutMapper customerOutMapper;
 
     @Autowired
     private CustomerRepository customerRepository;
@@ -56,18 +75,23 @@ public class CustomerRestController {
         this.webClientBuilder = webClientBuilder;
     }
 
+    @Operation(summary = "Get all customers")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found the customers"),
+            @ApiResponse(responseCode = "404", description = "Customers not found")
+    })
     @GetMapping
-    public ResponseEntity<List<Customer>> findAll() {
+    public ResponseEntity<List<CustomerOutDto>> findAll() {
         List<Customer> customers = this.customerRepository.findAll();
         if (customers.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<>(customers, HttpStatus.OK);
+        return new ResponseEntity<>(this.customerOutMapper.customerListToCustomerOutDtoList(customers), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<Customer> save(@RequestBody Customer customer) {
-        return new ResponseEntity<>(this.customerRepository.save(customer), HttpStatus.CREATED);
+    public ResponseEntity<Customer> save(@RequestBody CustomerInDto customer) {
+        return new ResponseEntity<>(this.customerRepository.save(this.customerInMapper.customerInDtoToCustomer(customer)), HttpStatus.CREATED);
     }
 
     @GetMapping("/full/{id}")

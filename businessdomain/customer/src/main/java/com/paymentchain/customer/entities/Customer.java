@@ -1,15 +1,19 @@
 package com.paymentchain.customer.entities;
 
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "customers")
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @ToString
 public class Customer implements Serializable {
 
@@ -29,9 +33,9 @@ public class Customer implements Serializable {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "customer_id")
+    @ToString.Exclude
     private List<CustomerProduct> products;
 
     @Transient
-    private List<?> transactions;
-
+    private List<Object> transactions;
 }

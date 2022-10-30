@@ -47,7 +47,7 @@ public class ApiExceptionHandler {
                 .title(ex.getHttpStatus().getReasonPhrase())
                 .type(ex.getHttpStatus().toString())
                 .build();
-        return new ResponseEntity(response, HttpStatus.PARTIAL_CONTENT);
+        return new ResponseEntity<>(response, HttpStatus.PARTIAL_CONTENT);
     }
 
 }
