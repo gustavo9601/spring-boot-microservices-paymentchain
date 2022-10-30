@@ -58,7 +58,11 @@ public class CustomerRestController {
 
     @GetMapping
     public ResponseEntity<List<Customer>> findAll() {
-        return new ResponseEntity<>(this.customerRepository.findAll(), HttpStatus.OK);
+        List<Customer> customers = this.customerRepository.findAll();
+        if (customers.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(customers, HttpStatus.OK);
     }
 
     @PostMapping
@@ -86,10 +90,8 @@ public class CustomerRestController {
     @GetMapping("/iban/{iban}")
     public ResponseEntity<Customer> getCustomerByIban(@PathVariable String iban) {
         Optional<Customer> customerOpt = this.customerRepository.findByIban(iban);
-        if (customerOpt.isPresent()) {
-            return ResponseEntity.ok(customerOpt.get());
-        }
-        return ResponseEntity.notFound().build();
+        return customerOpt.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     private <T> List<T> getTransactions(String accountIban) {
