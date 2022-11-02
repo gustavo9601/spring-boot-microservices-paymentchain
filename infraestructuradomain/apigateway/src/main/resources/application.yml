@@ -11,11 +11,15 @@ logging:
 
 
 spring:
+  application:
+    name: api-gateway
   cloud:
     gateway:
       routes:
         - id: customer
-          uri: http://localhost:8080
+          # uri: http://localhost:8080
+          # Usando Eureka lb:// => load balancing
+          uri: lb://customer
           predicates:
             - Path=/api/customers/**
 
