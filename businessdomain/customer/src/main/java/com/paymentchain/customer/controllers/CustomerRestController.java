@@ -83,6 +83,7 @@ public class CustomerRestController {
     @GetMapping
     public ResponseEntity<List<CustomerOutDto>> findAll() {
         List<Customer> customers = this.customerRepository.findAll();
+        log.info("Se obtuvieron los customers={}", customers);
         if (customers.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }

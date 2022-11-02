@@ -1,0 +1,21 @@
+
+# port
+server:
+  port: 9999
+
+# Level logging
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    reactor.netty.http.client: DEBUG
+
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: customer
+          uri: http://localhost:8080
+          predicates:
+            - Path=/api/customers/**
+

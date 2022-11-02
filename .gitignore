@@ -34,6 +34,7 @@ businessdomain/transactions/target/
 infraestructuradomain/target/
 infraestructuradomain/adminserver/target/
 infraestructuradomain/eureka/target/
+infraestructuradomain/gateway/target/
 
 
 pom.xml.tag
