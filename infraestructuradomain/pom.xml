@@ -32,6 +32,7 @@
         <module>adminserver</module>
         <module>configserver</module>
         <module>apigateway</module>
+        <module>keycloakAdapter</module>
     </modules>
    
 </project>

@@ -35,6 +35,7 @@ infraestructuradomain/target/
 infraestructuradomain/adminserver/target/
 infraestructuradomain/eureka/target/
 infraestructuradomain/gateway/target/
+infraestructuradomain/keycloakAdapter/target/
 
 
 pom.xml.tag
