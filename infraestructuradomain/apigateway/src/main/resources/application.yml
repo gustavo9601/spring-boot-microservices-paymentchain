@@ -23,3 +23,21 @@ spring:
           predicates:
             - Path=/api/customers/**
 
+        - id: transaction
+          uri: lb://transaction
+          predicates:
+            - Path=/api/transaction/full-validationst-test
+          # Especificamos los filtros de seguridad a aplicar por cada ruta
+          filters:
+            - name: AuthenticationFiltering
+
+
+        - id: products
+          uri: lb://products
+          predicates:
+            - Path=/api/products/**
+            # Especificando por verbos del request
+            - Method=GET,POST
+          # Especificamos los filtros de seguridad a aplicar por cada ruta
+          filters:
+            - name: AuthenticationFiltering
